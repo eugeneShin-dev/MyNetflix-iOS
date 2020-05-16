@@ -11,10 +11,56 @@ import UIKit
 class SearchViewController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var resultCollectionView: UICollectionView!
+    
+    // 컬렉션 뷰에 띄워줄 Movie 객체들
+    // 원래 MVVM 패턴에서는 뷰 모델을 통해 가져오는 게 좋지만 실습상 쉽게 하기 위해 그냥 여기에 넣기
+    // 처음엔 검색한 게 없으니까 비어있음
+    var movies: [Movie] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
+}
+
+extension SearchViewController: UICollectionViewDataSource {
+    // 몇 개 넘어오는지
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return movies.count
+    }
+    // 어떻게 표현할 건지
+    // 우선, 커스텀 셀을 만들어야 함
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ResultCell", for: indexPath) as?
+        ResultCell else {
+            return UICollectionViewCell()
+        }
+        cell.backgroundColor = .red
+        return cell
+    }
+   
+}
+
+class ResultCell: UICollectionViewCell {
+    @IBOutlet weak var movieThumbnail: UIImageView!
+}
+
+extension SearchViewController: UICollectionViewDelegate {
+    
+}
+// 사이즈 정해주기
+extension SearchViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizoeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let margin: CGFloat = 8
+        let itemSpacing: CGFloat = 10
+        
+        // 너비 = (총 너비 - 양쪽의 마진 - 아이템 간의 간격*2) / 한 줄에 띄울 개수
+        let width = (collectionView.bounds.width - margin*2 - itemSpacing*2) / 3
+        let height = width * 10/7 // width와의 비율로 정해주기
+        return CGSize(width: width, height: height)
+    }
 }
 
 extension SearchViewController: UISearchBarDelegate {
@@ -29,8 +75,8 @@ extension SearchViewController: UISearchBarDelegate {
         guard let searchTerm = searchBar.text, searchTerm.isEmpty == false else {return}
         // 네트워킹을 통한 검색
         // - 목표 : 서치텀을 가지고 네트워킹을 통해서 영화 검색
-        // - 검색 API 필요
-        // - 결과를 받아올 모델 Movie, Response 만들기
+        // - [x] 검색 API 필요
+        // - [x] 결과를 받아올 모델 Movie, Response 만들기
         // - 결과를 받와서, CollectionView로 표현해주기
         
         // 인스턴스를 생성하지 않고 메소드 호출해서 사용
@@ -38,7 +84,9 @@ extension SearchViewController: UISearchBarDelegate {
         SearchAPI.search(searchTerm) { movies in
             // collectionView로 표현하기
             print("--> 몇 개 넘어왔는지 \(movies.count), 첫번째꺼 제목\(movies.first?.title)")
-            print("푸시 되는지 확인")
+            print("for commit")
+            self.movies = movies
+            self.resultCollectionView.reloadData()
         }
         print("--> 검색어: \(searchTerm)")
     
