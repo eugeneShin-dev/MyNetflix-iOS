@@ -87,6 +87,7 @@ extension SearchViewController: UISearchBarDelegate {
             print("for commit")
             self.movies = movies
             self.resultCollectionView.reloadData()
+            print("commit test")
         }
         print("--> 검색어: \(searchTerm)")
     
