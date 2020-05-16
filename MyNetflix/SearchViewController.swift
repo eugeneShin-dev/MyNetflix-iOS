@@ -38,6 +38,7 @@ extension SearchViewController: UISearchBarDelegate {
         SearchAPI.search(searchTerm) { movies in
             // collectionView로 표현하기
             print("--> 몇 개 넘어왔는지 \(movies.count), 첫번째꺼 제목\(movies.first?.title)")
+            print("푸시 되는지 확인")
         }
         print("--> 검색어: \(searchTerm)")
     
