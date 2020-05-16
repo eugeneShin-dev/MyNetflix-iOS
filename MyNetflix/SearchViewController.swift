@@ -51,7 +51,7 @@ extension SearchViewController: UICollectionViewDelegate {
 }
 // 사이즈 정해주기
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizoeForItemAt indexPath: IndexPath) -> CGSize {
+   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let margin: CGFloat = 8
         let itemSpacing: CGFloat = 10
@@ -84,10 +84,14 @@ extension SearchViewController: UISearchBarDelegate {
         SearchAPI.search(searchTerm) { movies in
             // collectionView로 표현하기
             print("--> 몇 개 넘어왔는지 \(movies.count), 첫번째꺼 제목\(movies.first?.title)")
-            print("for commit")
-            self.movies = movies
-            self.resultCollectionView.reloadData()
-            print("commit test4")
+            
+            // Crash 해결 : UI 만드는 API가 메인 스레드에서만 실행되게하기
+            DispatchQueue.main.async {
+                self.movies = movies
+                self.resultCollectionView.reloadData()
+            }
+            
+           
         }
         print("--> 검색어: \(searchTerm)")
     
