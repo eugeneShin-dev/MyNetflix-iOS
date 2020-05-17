@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class SearchViewController: UIViewController {
     @IBOutlet weak var searchBar: UISearchBar!
@@ -36,7 +37,14 @@ extension SearchViewController: UICollectionViewDataSource {
         ResultCell else {
             return UICollectionViewCell()
         }
-        cell.backgroundColor = .red
+        let movie = movies[indexPath.item]
+        let url = URL(string: movie.thumbnailPath)!
+        // cell.movieThumbnail.image = movie.thumbnailPath // imagePath가 String이라서 오류
+        // imagePath(String)를 이미지로 만들기
+        // => third-party 라이브러리를 사용해보자
+        // SPM, Cocoa Pod, Carthage 등 세 가지 방법을 통해 가져올 수 있다 (여기선 SPM 사용)
+        // King Fisher 사용
+        cell.movieThumbnail.kf.setImage(with: url) // url로 이미지를 만들어준다
         return cell
     }
    
@@ -46,6 +54,7 @@ class ResultCell: UICollectionViewCell {
     @IBOutlet weak var movieThumbnail: UIImageView!
 }
 
+// 클릭했을 때의 반응!
 extension SearchViewController: UICollectionViewDelegate {
     
 }
