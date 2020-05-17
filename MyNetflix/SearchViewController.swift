@@ -56,7 +56,18 @@ class ResultCell: UICollectionViewCell {
 
 // 클릭했을 때의 반응!
 extension SearchViewController: UICollectionViewDelegate {
-    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // movie
+        // player vc
+        // player + movie
+        // presenting player vc
+        let movie =  movies[indexPath.item]
+        
+        let sb = UIStoryboard(name: "Player", bundle: nil)
+        let vc = sb.instantiateViewController(identifier: "PlayerViewController") as! PlayerViewController
+        vc.modalPresentationStyle = .fullScreen // 전체화면으로 띄워주기
+        present(vc, animated: false, completion: nil)
+    }
 }
 // 사이즈 정해주기
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
